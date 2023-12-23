@@ -4,15 +4,19 @@ import {Box, Stack, Typography} from "@mui/material"
 import Sidebar from './Sidebar'
 import Videos from './Videos'
 import { fetchFromApi } from '../utils/fetchFromApi'
-
+import {MutatingDots} from 'react-loader-spinner'
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState("New")
+  const [load, setLoad] = useState(false)
   const [videos, setVideos] = useState([])
   useEffect(()=>{
-    fetchFromApi(`search?q=${selectedCategory}&part=snippet,id&regionCode=US&maxResults=50&order=viewCount`)
+    setLoad(true)
+    
+    fetchFromApi(`search?q=${selectedCategory}&part=snippet,id&regionCode=US&maxResults=50`)
     .then((data)=>{
       setVideos(data.items)
+      setLoad(false)
     })
   },[selectedCategory])
   return (
@@ -30,7 +34,14 @@ const Feed = () => {
         <Typography fontWeight="bold" variant='h4' mb={2} sx={{color:"#fff"}}>
           {selectedCategory} <span style={{"color":"#f31503"}}>Videos</span>
         </Typography>
-        <Videos videos={videos}></Videos>
+        {load?(<MutatingDots visible={true}
+  height="100"
+  width="100"
+  color="#f31503"
+  secondaryColor="#f31503"
+  radius="12.5"
+  ariaLabel="mutating-dots-loading"
+  wrapperStyle={{position:'absolute',left:"50%", top:"50%", transform:"translate(-50%,-50%)"}}></MutatingDots>):(<Videos videos={videos}></Videos>)}
       </Box>
       
     </Stack>
