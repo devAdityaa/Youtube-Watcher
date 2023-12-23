@@ -8,10 +8,11 @@ import { fetchFromApi } from '../utils/fetchFromApi'
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState("New")
+  const [videos, setVideos] = useState([])
   useEffect(()=>{
     fetchFromApi(`search?q=${selectedCategory}&part=snippet,id&regionCode=US&maxResults=50&order=viewCount`)
     .then((data)=>{
-      console.log(data)
+      setVideos(data.items)
     })
   },[selectedCategory])
   return (
@@ -29,7 +30,7 @@ const Feed = () => {
         <Typography fontWeight="bold" variant='h4' mb={2} sx={{color:"#fff"}}>
           {selectedCategory} <span style={{"color":"#f31503"}}>Videos</span>
         </Typography>
-        <Videos></Videos>
+        <Videos videos={videos}></Videos>
       </Box>
       
     </Stack>
